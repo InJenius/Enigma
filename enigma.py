@@ -32,6 +32,10 @@ def rotor_setup():
             selected_rotors.append(option)
             to_choose += -1
             available_rotors.remove(option)
+
+        if option == "Q!":
+                exit()
+
         else:
             print("Invalid rotor option. Please try again.\n")
 
@@ -41,6 +45,9 @@ def rotor_setup():
         if not option:
             selected_rotors.append("AAA")
             break
+
+        elif option == "Q!":
+                exit()
 
         elif re.match('^[A-Z]{3}$', option):
             selected_rotors.append(option)
@@ -70,6 +77,9 @@ def main():
         if option == "1":
             ciphertext = ""
             sentence = input("#: ").upper()
+            if sentence == "Q!":
+                exit()
+
             for i in range(0, len(sentence)):
                 if sentence[i].isalpha():
                     ciphertext += myenigma.transmute(sentence[i])
