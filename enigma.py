@@ -42,6 +42,7 @@ def rotor_setup():
     while True:
         print("Input start positions or leave blank for AAA e.g. ABC")
         option = input().upper()
+        
         if not option:
             selected_rotors.append("AAA")
             break
