@@ -106,28 +106,6 @@ class enigma_machine:
         if self.slow_rotor.index == 26:
             self.slow_rotor.index = 0
 
-    def rotor_adjust(self, rotor, rotor_to_accelerate):
-        """
-        Check if rotor has hit notch and accelerate next rotor if so
-        rotor - Rotor object to look at
-        rotor_to_accelerate - Rotor object to increase index if suitable
-        """
-
-        # Functionality not yet implemented
-        if rotor.notch == '-':
-            print('ok')
-            # Call double check
-        else:
-
-            # Check if notch position is equal to index
-            if rotor.index == ord(rotor.notch) - 64:
-                # If so move next rotor
-                rotor_to_accelerate.index += 1
-
-            # Else check if rotor needs to be reset
-            elif rotor.index == 26:
-                rotor.index = 0
-
     def transmute(self, character):
         """
         Function to run through all steps of enigma and return new character
