@@ -45,7 +45,7 @@ def rotor_setup():
     # Allow maximum of three to be selected
     to_choose = 3
     while to_choose > 0:
-        print("Select from the following options")
+        print("\nSelect from the following options")
         print(str(available_rotors))
         option = input().upper()
 
@@ -56,15 +56,15 @@ def rotor_setup():
             available_rotors.remove(option)
 
         # Check if user wants to exit proram
-        if option == "Q!":
+        elif option == "Q!":
                 exit()
 
         else:
-            print("Invalid rotor option. Please try again.\n")
+            print("Invalid rotor option. Please try again.")
 
     # Allow user to input starting position of rotors
     while True:
-        print("Input start positions or leave blank for AAA e.g. ABC")
+        print("\nInput start positions or leave blank for AAA e.g. ABC")
         option = input().upper()
 
         # Set default value
@@ -81,7 +81,7 @@ def rotor_setup():
             break
 
         else:
-            print("Invalid starting configuration.\n")
+            print("Invalid starting configuration.")
 
     # Return three selected rotors and starting position
     return selected_rotors
@@ -97,7 +97,7 @@ def plugboard_setup():
     # Set variable outside of loop scope
     plug_settings = {}
 
-    print("Input settings for plugboard\nLeave empty for no connection.\nFormat AB-CD-EF")
+    print("\nInput settings for plugboard\nLeave empty for no connection.\nFormat AB-CD-EF")
 
     while True:
         # Reset values for loop
@@ -172,6 +172,9 @@ def main():
     This method is used to get the settings for machine
     then to initiate it and allow user to input data
     """
+
+    print('To quit at anytime, input Q! (Case-insensitive)')
+
     # Define and create rotors
     selected = rotor_setup()
 
@@ -186,10 +189,10 @@ def main():
     # Create enigma_machine object
     myenigma = enigma_machine(rotor_1, rotor_2, rotor_3, plugboard)
 
-    # Allow user to select from options
-    option = input("Menu: 1. Sentence | 2. Character input | 3. Quit : ")
-
     while True:
+        # Infine loop to keep asking user
+        option = input("Menu: 1. Sentence | 2. Character input | 3. Quit : ")
+
         # Option 1 does an entire sentence at once
         # Avoids need to wait and ignores non-alphabetic characters
         if option == "1":
@@ -198,7 +201,7 @@ def main():
 
             # Check if user wants to quit
             if sentence == "Q!":
-                exit()
+                continue
 
             # Check if each char is alphabetic and transmute if it is
             for i in range(0, len(sentence)):
@@ -234,9 +237,6 @@ def main():
 
         else:
             print("Invalid input.\n")
-
-        # Infine loop to keep asking user
-        option = input("Menu: 1. Sentence | 2. Character input | 3. Quit : ")
 
 
 if __name__ == "__main__":
