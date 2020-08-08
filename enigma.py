@@ -94,45 +94,62 @@ def plugboard_setup():
     create and then return a substitution
     alphabet corresponding to the input
     """
-    # Generate new alphabet
-    plug_settings = generate_alphabet_dic()
+    # Set variable outside of loop scope
+    plug_settings = {}
 
-    print("Input settings for plugboard\nFormat AB-CD-EF")
+    print("Input settings for plugboard\nLeave empty for no connection.\nFormat AB-CD-EF")
 
     while True:
+        # Reset values for loop
+        errors = False
+        plug_settings = generate_alphabet_dic()
+
         wiring = input('#: ').upper() + '-'
 
-        if re.match('^([A-Z]{2}-){1,13}$', wiring):
+        if wiring == "-":
+            print("No connections made.")
+            return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        
+        elif wiring == "Q!-":
+            exit()
+
+        elif re.match('^([A-Z]{2}-){1,13}$', wiring):
                 # Split input into pares
                 pairs = wiring.split('-')
                 for plugs in pairs:
                     if plugs:
-                        print(plugs)
                         plug_one = plugs[0]
                         plug_two = plugs[1]
+                        if plug_one == plug_two:
+                            print('Invalid config. Plugboard can not connect to itself.\n')
+                            errors = True
+                            break
 
                         # Used to check if duplicate pairs
                         if plug_settings[plug_one] == plug_one:
                             plug_settings[plug_one] = plug_two
                         else:
-                            print('Invalid config. Plugboard can only have one connection\n')
+                            print('Invalid config. Plugboard can only have one connection.\n')
+                            errors = True
+                            break
 
                         # Used to check if duplicate pairs
                         if plug_settings[plug_two] == plug_two:
                             plug_settings[plug_two] = plug_one
                         else:
-                            print('Invalid config. Plugboard can only have one connection\n')
+                            print('Invalid config. Plugboard can only have one connection.\n')
+                            errors = True
+                            break
 
                 # If successful, break from loop
-                break
+                if errors:
+                    continue
+                else:
+                    break
         else:
-           print('Invalid config. Format: AB-CD-EF')
-
-        # If failed, generate new alphabet
-        plug_settings = generate_alphabet_dic()
+           print('Invalid config. Format: AB-CD-EF.\n')
     
     plugboard = list(plug_settings.values())
-    print(('').join(plugboard))
     return ('').join(plugboard)
 
 
