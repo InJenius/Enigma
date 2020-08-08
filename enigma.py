@@ -87,6 +87,69 @@ def rotor_setup():
     return selected_rotors
 
 
+def plugboard_setup():
+    """
+    This method is used to ask the user what
+    plugboard settings they want to use and
+    create and then return a substitution
+    alphabet corresponding to the input
+    """
+    # Generate new alphabet
+    plug_settings = generate_alphabet_dic()
+
+    print("Input settings for plugboard\nFormat AB-CD-EF")
+
+    while True:
+        wiring = input('#: ').upper() + '-'
+
+        if re.match('^([A-Z]{2}-){1,13}$', wiring):
+                # Split input into pares
+                pairs = wiring.split('-')
+                for plugs in pairs:
+                    if plugs:
+                        print(plugs)
+                        plug_one = plugs[0]
+                        plug_two = plugs[1]
+
+                        # Used to check if duplicate pairs
+                        if plug_settings[plug_one] == plug_one:
+                            plug_settings[plug_one] = plug_two
+                        else:
+                            print('Invalid config. Plugboard can only have one connection\n')
+
+                        # Used to check if duplicate pairs
+                        if plug_settings[plug_two] == plug_two:
+                            plug_settings[plug_two] = plug_one
+                        else:
+                            print('Invalid config. Plugboard can only have one connection\n')
+
+                # If successful, break from loop
+                break
+        else:
+           print('Invalid config. Format: AB-CD-EF')
+
+        # If failed, generate new alphabet
+        plug_settings = generate_alphabet_dic()
+    
+    plugboard = list(plug_settings.values())
+    print(('').join(plugboard))
+    return ('').join(plugboard)
+
+
+def generate_alphabet_dic():
+    """
+    Generate new dictionary with keys
+    and values equal to the alphabet 
+    in upper case.
+    """
+    alpha = {}
+    for i in range(0, 26):
+        char = chr(i + 65)
+        alpha[char] = char
+
+    return alpha
+
+
 def main():
     """
     This method is used to get the settings for machine
@@ -101,8 +164,7 @@ def main():
     rotor_3 = rotor(rotor_options[selected[2]], ord(selected[3][2]) - 65)
 
     # Define plugboard
-    # Currently not implemented
-    plugboard = ""
+    plugboard = plugboard_setup()
 
     # Create enigma_machine object
     myenigma = enigma_machine(rotor_1, rotor_2, rotor_3, plugboard)
