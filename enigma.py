@@ -97,7 +97,8 @@ def plugboard_setup():
     # Set variable outside of loop scope
     plug_settings = {}
 
-    print("\nInput settings for plugboard\nLeave empty for no connection.\nFormat AB-CD-EF")
+    print("\nSettings for plugboard\nLeave empty for no connection.")
+    print("Format AB-CD-EF")
 
     while True:
         # Reset values for loop
@@ -109,7 +110,7 @@ def plugboard_setup():
         if wiring == "-":
             print("No connections made.")
             return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        
+
         elif wiring == "Q!-":
             exit()
 
@@ -121,7 +122,7 @@ def plugboard_setup():
                         plug_one = plugs[0]
                         plug_two = plugs[1]
                         if plug_one == plug_two:
-                            print('Invalid config. Plugboard can not connect to itself.\n')
+                            print('[X] Plugboard can not connect to itself.\n')
                             errors = True
                             break
 
@@ -129,7 +130,7 @@ def plugboard_setup():
                         if plug_settings[plug_one] == plug_one:
                             plug_settings[plug_one] = plug_two
                         else:
-                            print('Invalid config. Plugboard can only have one connection.\n')
+                            print('[X] Duplicate plug detected\n')
                             errors = True
                             break
 
@@ -137,7 +138,7 @@ def plugboard_setup():
                         if plug_settings[plug_two] == plug_two:
                             plug_settings[plug_two] = plug_one
                         else:
-                            print('Invalid config. Plugboard can only have one connection.\n')
+                            print('[X] Duplicate plug detected\n')
                             errors = True
                             break
 
@@ -147,8 +148,8 @@ def plugboard_setup():
                 else:
                     break
         else:
-           print('Invalid config. Format: AB-CD-EF.\n')
-    
+            print('Invalid config. Format: AB-CD-EF.\n')
+
     plugboard = list(plug_settings.values())
     return ('').join(plugboard)
 
@@ -156,9 +157,10 @@ def plugboard_setup():
 def generate_alphabet_dic():
     """
     Generate new dictionary with keys
-    and values equal to the alphabet 
+    and values equal to the alphabet
     in upper case.
     """
+
     alpha = {}
     for i in range(0, 26):
         char = chr(i + 65)
