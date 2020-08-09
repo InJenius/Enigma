@@ -20,6 +20,11 @@ class enigma_machine:
         self.reflector = "YRUHQSLDPXNGOKMIEBFZCWVJAT"
         self.plugboard = plugboard
 
+        # Generate initial conversion tables
+        self.generate_conversion_map(self.fast_rotor)
+        self.generate_conversion_map(self.normal_rotor)
+        self.generate_conversion_map(self.slow_rotor)
+
     def substitute(self, value, char):
         """
         Substitute a single character from a passed alphabet.
@@ -37,38 +42,9 @@ class enigma_machine:
         char - Character to change
         """
 
-        # Checks if first pass in order to create reverse key
-        # Current method is very inefficient
-        # To improve, only call when rotor changes position
         if first_pass:
-            conversion = []
-
-            # Loops through all letters of alphabet
-            for alpha_index in range(0, 26):
-                # Get position of key relative to rotor's position
-                retrieve = (alpha_index + rotor.index) % 26
-                # Get wiring (shift) of rotor at that position
-                current_wire = rotor.wiring[chr(retrieve + 65)]
-
-                # Calculate what character is created
-                adjustment = current_wire + alpha_index
-
-                # Checks to make sure character is within limits of 0-26
-                if adjustment > 0:
-                    adjustment = adjustment % 26
-
-                # Second error check if previous character was negative
-                if adjustment + 65 < 65:
-                    adjustment += 26
-
-                # Add to array
-                conversion.append(chr(65 + adjustment))
-
-            # Set rotor's reverse substitute
-            rotor.extra = conversion
-
             # Return character passed through rotor wiring
-            return conversion[ord(char)-65]
+            return rotor.extra[ord(char)-65]
 
         else:
             # Get index of character in list
@@ -84,6 +60,7 @@ class enigma_machine:
 
         # Moves after every key press
         self.fast_rotor.index += 1
+        self.generate_conversion_map(self.fast_rotor)
 
         # Normal rotor
         # Moves slow rotor after hitting notch
@@ -91,8 +68,10 @@ class enigma_machine:
         if self.normal_rotor.index == ord(self.normal_rotor.notch) - 65:
             self.normal_rotor.index += 1
             self.slow_rotor.index += 1
+            self.generate_conversion_map(self.normal_rotor)
         elif self.normal_rotor.index == 26:
             self.normal_rotor.index = 0
+            self.generate_conversion_map(self.slow_rotor)
 
         # Fast rotor
         # Moves normal rotor after hitting notch
@@ -111,6 +90,7 @@ class enigma_machine:
         Function to run through all steps of enigma and return new character
         character - Plaintext character to convert
         """
+
         # Increment and update rotor configurations
         self.rotor_update()
 
@@ -141,8 +121,41 @@ class enigma_machine:
         """
         Gets current index of all rotors in alphabetical form
         """
+
         index = chr(self.slow_rotor.index + 65)
         index += chr(self.normal_rotor.index + 65)
         index += chr(self.fast_rotor.index + 65)
 
         return index
+
+    def generate_conversion_map(self, rotor):
+        """
+        Used to generate mapping for rotor's current wiring
+        Allows for mapping to be done from either direction.
+        Function is only called when a rotor updates to increase
+        efficiency.
+        """
+        conversion = []
+
+        # Loops through all letters of alphabet
+        for alpha_index in range(0, 26):
+            # Get position of key relative to rotor's position
+            retrieve = (alpha_index + rotor.index) % 26
+            # Get wiring (shift) of rotor at that position
+            current_wire = rotor.wiring[chr(retrieve + 65)]
+
+            # Calculate what character is created
+            adjustment = current_wire + alpha_index
+
+            # Checks to make sure character is within limits of 0-26
+            if adjustment > 0:
+                adjustment = adjustment % 26
+
+            # Second error check if previous character was negative
+            if adjustment + 65 < 65:
+                adjustment += 26
+
+            # Add to array
+            conversion.append(chr(65 + adjustment))
+
+        rotor.extra = conversion
