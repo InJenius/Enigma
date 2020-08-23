@@ -53,6 +53,34 @@ class enigma_machine:
             # Return new character
             return chr(chr_location + 65)
 
+    def notch_check(self, index, notch, normal):
+        """
+        Checks if rotor's current position is the same as its notch
+        """
+        if normal:
+            if notch == "-":
+                # Check for final three rotors:
+                if index == 25 or index == 12:
+                    return True
+
+            # If not '-'
+            else:
+                if index == ord(notch) - 65:
+                    return True
+
+        else:
+            if notch == "-":
+                # Check for final three rotors:
+                if index == 26 or index == 13:
+                    return True
+
+            # If not '-'
+            else:
+                if index == ord(notch) - 64:
+                    return True
+
+        return False
+
     def rotor_update(self):
         """
         Moves rotor positions along as more keys are pressed
@@ -65,25 +93,31 @@ class enigma_machine:
         # Normal rotor
         # Moves slow rotor after hitting notch
         # Contains double step to move an extra element
-        if self.normal_rotor.index == ord(self.normal_rotor.notch) - 65:
+        if self.notch_check(self.normal_rotor.index, self.normal_rotor.notch, True):
             self.normal_rotor.index += 1
             self.slow_rotor.index += 1
             self.generate_conversion_map(self.normal_rotor)
-        elif self.normal_rotor.index == 26:
-            self.normal_rotor.index = 0
             self.generate_conversion_map(self.slow_rotor)
+
+        if self.normal_rotor.index >= 26:
+            self.normal_rotor.index = 0
+            self.generate_conversion_map(self.normal_rotor)
 
         # Fast rotor
         # Moves normal rotor after hitting notch
-        if self.fast_rotor.index == ord(self.fast_rotor.notch) - 64:
+        if self.notch_check(self.fast_rotor.index, self.fast_rotor.notch, False):
             self.normal_rotor.index += 1
-        elif self.fast_rotor.index == 26:
+            self.generate_conversion_map(self.normal_rotor)
+
+        if self.fast_rotor.index >= 26:
             self.fast_rotor.index = 0
+            self.generate_conversion_map(self.fast_rotor)
 
         # Slow rotor
         # Does not move rotors, simply resets
-        if self.slow_rotor.index == 26:
+        if self.slow_rotor.index >= 26:
             self.slow_rotor.index = 0
+            self.generate_conversion_map(self.slow_rotor)
 
     def transmute(self, character):
         """
