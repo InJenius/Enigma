@@ -5,7 +5,7 @@ Initialisation requires three rotors & substitution for the plugboard.
 
 
 class enigma_machine:
-    def __init__(self, slow_rotor, normal_rotor, fast_rotor, plugboard):
+    def __init__(self, slow_rotor, normal_rotor, fast_rotor, plugboard, reflector):
         """
         This method initialises the machine and all its variables for
         functionality
@@ -19,6 +19,7 @@ class enigma_machine:
         self.fast_rotor = fast_rotor
         self.reflector = "YRUHQSLDPXNGOKMIEBFZCWVJAT"
         self.plugboard = plugboard
+        self.reflector = reflector.substitute
 
         # Generate initial conversion tables
         self.generate_conversion_map(self.fast_rotor)
