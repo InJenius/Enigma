@@ -1,9 +1,11 @@
 import re
 from enigma_machine import enigma_machine
 from rotor import rotor
+from reflector import reflector
 
 # Set rotor options variable for global usage
 rotor_options = {}
+reflector_options = {}
 
 
 def import_rotors():
@@ -27,6 +29,28 @@ def import_rotors():
 
             # Add to existing dictionary
             rotor_options[gear_name] = [gear_key, gear_notch]
+
+
+def import_reflectors():
+    """
+    This method reads reflector file and initialises
+    all reflectors into program
+    """
+
+    # Get all lines of file
+    file_lines = open('reflector_details.txt', 'r').read().splitlines()
+
+    for i in range(0, len(file_lines)):
+        # Check if meant to read line of file
+        if file_lines[i][0] != ('#'):
+            # If so, split via '|'
+            data_line = file_lines[i].split('|')
+            # Convert data to variables
+            rotor_name = data_line[0]
+            rotor_sub = data_line[1]
+
+            # Add to existing dictionary
+            reflector_options[rotor_name] = reflector(rotor_name, rotor_sub)
 
 
 def rotor_setup():
@@ -85,6 +109,33 @@ def rotor_setup():
 
     # Return three selected rotors and starting position
     return selected_rotors
+
+
+def reflector_setup():
+    """
+    This method is used to ask the user what
+    reflector they want to use and return the selected
+    reflector.
+    """
+
+    while True:
+        print("\nSelect rotor from following options.\nLeave blank for default 'B'")
+        print(str(list(reflector_options.keys())))
+        option = input().upper()
+
+        # If rotor available, add to selected and remove from available
+        if option in list(reflector_options.keys()):
+            return reflector_options[option]
+
+        # Check if user wants to exit proram
+        elif option == "Q!":
+                exit()
+        
+        elif option == "":
+            return reflector_options['B']
+
+        else:
+            print("Invalid reflector option. Please try again.")
 
 
 def plugboard_setup():
@@ -185,11 +236,14 @@ def main():
     rotor_2 = rotor(rotor_options[selected[1]], ord(selected[3][1]) - 65)
     rotor_3 = rotor(rotor_options[selected[2]], ord(selected[3][2]) - 65)
 
+    # Define & create reflector
+    reflector = reflector_setup()
+
     # Define plugboard
     plugboard = plugboard_setup()
 
     # Create enigma_machine object
-    myenigma = enigma_machine(rotor_1, rotor_2, rotor_3, plugboard)
+    myenigma = enigma_machine(rotor_1, rotor_2, rotor_3, plugboard, reflector)
 
     while True:
         # Infine loop to keep asking user
@@ -244,4 +298,5 @@ def main():
 if __name__ == "__main__":
     # Import rotors and start program
     import_rotors()
+    import_reflectors()
     main()
